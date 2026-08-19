@@ -4,6 +4,8 @@ services:
     runtime: docker
     rootDir: rtdias3d
     plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
     healthCheckPath: /actuator/health
     envVars:
       - key: JWT_SECRET
