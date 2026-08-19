@@ -1,10 +1,9 @@
 services:
   - type: web
     name: rtdias3d-api
-    runtime: java
+    runtime: docker
     rootDir: rtdias3d
-    buildCommand: chmod +x mvnw && ./mvnw package -DskipTests
-    startCommand: java -jar target/rtdias3d-0.0.1-SNAPSHOT.jar
+    plan: free
     healthCheckPath: /actuator/health
     envVars:
       - key: JWT_SECRET

@@ -1,6 +1,6 @@
 # RT Dias 3D SaaS — deploy
 
-O deploy usa Vercel para a interface React, Render para a API Spring Boot e uma hospedagem MySQL externa para os dados. Nenhum contêiner é necessário no repositório.
+O deploy usa Vercel para a interface React, Render para a API Spring Boot e uma hospedagem MySQL externa para os dados. O Render usa o Dockerfile apenas para compilar e executar a API Java, pois Blueprints não possuem runtime Java nativo.
 
 ## 1. Hospedagem MySQL
 
