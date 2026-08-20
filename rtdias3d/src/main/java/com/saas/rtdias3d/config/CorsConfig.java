@@ -12,16 +12,30 @@ public class CorsConfig {
 
     @Bean
     public WebMvcConfigurer corsConfigurer() {
-        String allowedOrigins = System.getenv().getOrDefault("APP_CORS_ALLOWED_ORIGINS", "http://localhost:3000");
+
+        String allowedOrigins = System.getenv().getOrDefault(
+                "APP_CORS_ALLOWED_ORIGINS",
+                "http://localhost:3000"
+        );
+
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOriginPatterns(Arrays.stream(allowedOrigins.split(","))
-                                .map(String::trim)
-                                .filter(origin -> !origin.isBlank())
-                                .toArray(String[]::new))
-                        .allowedMethods("GET", "POST", "PUT", "DELETE");
+                        .allowedOriginPatterns(
+                                Arrays.stream(allowedOrigins.split(","))
+                                        .map(String::trim)
+                                        .filter(origin -> !origin.isBlank())
+                                        .toArray(String[]::new)
+                        )
+                        .allowedMethods(
+                                "GET",
+                                "POST",
+                                "PUT",
+                                "DELETE",
+                                "OPTIONS"
+                        )
+                        .allowedHeaders("*");
             }
         };
     }
