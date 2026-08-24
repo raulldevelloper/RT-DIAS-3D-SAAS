@@ -59,6 +59,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // preflight do navegador (CORS)
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/configuracao/publica").permitAll()
                         .requestMatchers(HttpMethod.POST, "/usuarios").permitAll() // cadastro de vendedor
                         .requestMatchers("/admin/**").permitAll() // protegido pela X-Admin-Key dentro do controller
                         .anyRequest().authenticated()

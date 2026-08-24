@@ -6,14 +6,16 @@ import com.saas.rtdias3d.entitys.UsuarioEntity;
 import com.saas.rtdias3d.repositories.UsuarioRepository;
 import com.saas.rtdias3d.security.JwtService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/auth")
@@ -29,17 +31,26 @@ public class AuthController {
     private UsuarioRepository usuarioRepository;
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDTO> login(@RequestBody LoginRequestDTO dto) {
+    public ResponseEntity<?> login(@RequestBody LoginRequestDTO dto) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(dto.email(), dto.senha())
             );
-        } catch (org.springframework.security.authentication.DisabledException e) {
-            throw new IllegalArgumentException("Sua conta está desativada. Entre em contato com o suporte.");
-        } catch (org.springframework.security.authentication.AccountExpiredException e) {
-            throw new IllegalArgumentException("Sua assinatura expirou. Entre em contato para renovar.");
+        } catch (AccountExpiredException e) {
+            return ResponseEntity
+                    .status(HttpStatus.PAYMENT_REQUIRED) // 402
+                    .body(Map.of(
+                            "mensagem", "Sua assinatura expirou.",
+                            "assinaturaExpirada", true
+                    ));
+        } catch (DisabledException e) {
+            return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .body(Map.of("mensagem", "Sua conta está desativada. Entre em contato com o suporte."));
         } catch (BadCredentialsException e) {
-            throw new IllegalArgumentException("Email ou senha inválidos.");
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .body(Map.of("mensagem", "Email ou senha inválidos."));
         }
 
         UsuarioEntity usuario = usuarioRepository.findByEmail(dto.email())
