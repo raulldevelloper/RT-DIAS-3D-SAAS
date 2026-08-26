@@ -15,6 +15,7 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Map;
 
 @RestController
@@ -55,6 +56,9 @@ public class AuthController {
 
         UsuarioEntity usuario = usuarioRepository.findByEmail(dto.email())
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado."));
+
+        usuario.setUltimoLogin(LocalDateTime.now());
+        usuarioRepository.save(usuario);
 
         String token = jwtService.gerarToken(usuario);
 

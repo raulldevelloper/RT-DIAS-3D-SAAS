@@ -1,6 +1,8 @@
 package com.saas.rtdias3d.controllers;
 
+import com.saas.rtdias3d.dto.MetricasResponseDTO;
 import com.saas.rtdias3d.dto.UsuarioResponseDTO;
+import com.saas.rtdias3d.services.MetricasService;
 import com.saas.rtdias3d.services.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +18,21 @@ public class AdminController {
 
     @Value("${admin.chave-secreta}")
     private String chaveSecreta;
+
+
+    @Autowired
+    private MetricasService metricasService;
+
+    @GetMapping("/metricas")
+    public ResponseEntity<MetricasResponseDTO> metricas(
+            @RequestHeader("X-Admin-Key") String chaveEnviada
+    ) {
+        if (!chaveSecreta.equals(chaveEnviada)) {
+            throw new IllegalArgumentException("Chave de administrador inválida.");
+        }
+        return ResponseEntity.ok(metricasService.calcular());
+    }
+
 
     @PostMapping("/usuarios/{id}/renovar")
     public ResponseEntity<UsuarioResponseDTO> renovar(

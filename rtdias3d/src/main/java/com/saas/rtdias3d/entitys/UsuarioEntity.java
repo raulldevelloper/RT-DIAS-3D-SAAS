@@ -48,6 +48,9 @@ public class UsuarioEntity implements UserDetails {
     @Column(name = "assinatura_expira_em", nullable = false)
     private LocalDateTime assinaturaExpiraEm;
 
+    @Column(name = "ultimo_login")
+    private LocalDateTime ultimoLogin; // null até o primeiro login
+
     // ---- Métodos exigidos pela interface UserDetails ----
 
     @Override
